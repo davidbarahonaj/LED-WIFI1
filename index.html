@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control IoT - TUVN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* Sombra de Resplandor: Cambiado de amarillo a rojo, pero más sutil */
+        .glow-on { box-shadow: 0 0 15px rgba(220, 38, 38, 0.7); border-color: #dc2626; } 
+        /* Panel de Vidrio: Mismo color oscuro para el fondo */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Color de Fondo de la Interfaz (similar a la imagen) */
+        .bg-interface {
+            background-color: #121212; /* Un negro muy oscuro */
+        }
+        /* Contenedor principal con el fondo oscuro */
+        .main-container {
+            background-color: #1a1a1a; /* Un gris oscuro para el contenedor central */
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* Estilo para los detalles del panel de información */
+        .info-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .info-detail:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-interface text-slate-100 min-h-screen font-sans">
+    
+    <div class="relative z-10 max-w-md mx-auto p-4 min-h-screen flex flex-col">
+        
+        <header class="flex justify-between items-center py-6">
+            <div class="flex items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-extrabold text-red-500">
+                        TUVN
+                    </h1>
+                    <p class="text-xs text-slate-400">Automatización e Instrumentación</p>
+                </div>
+            </div>
+            
+            <div id="headerStatus" class="flex items-center gap-2">
+                <i data-lucide="disc" class="w-4 h-4 text-red-500 fill-red-500"></i>
+                <span class="text-sm font-medium text-red-500" id="headerStatusText">Desconectado</span>
+            </div>
+            
+        </header>
+        
+        <div class="main-container p-6 space-y-6">
+            
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-semibold text-slate-100">Práctica de control remoto</h2>
+                <p class="text-sm text-slate-400">Laboratorio de IoT</p>
+            </div>
+            
+            <div class="bg-slate-900 p-4 rounded-lg border border-slate-700/50 mb-6">
+                <div class="info-detail">
+                    <p class="text-sm text-slate-400 flex items-center gap-2">
+                        <i data-lucide="users" class="w-4 h-4 text-red-500"></i>
+                        Estudiantes
+                    </p>
+                    <p class="text-sm font-semibold text-white">Alcaiciga, Barahona, Chuqui</p>
+                </div>
+                <div class="info-detail">
+                    <p class="text-sm text-slate-400 flex items-center gap-2">
+                        <i data-lucide="award" class="w-4 h-4 text-red-500"></i>
+                        Nivel
+                    </p>
+                    <p class="text-sm font-semibold text-white">Quinto</p>
+                </div>
+                <div class="info-detail">
+                    <p class="text-sm text-slate-400 flex items-center gap-2">
+                        <i data-lucide="calendar" class="w-4 h-4 text-red-500"></i>
+                        Fecha
+                    </p>
+                    <p class="text-sm font-semibold text-white">28/11/2025</p>
+                </div>
+                <div class="info-detail">
+                    <p class="text-sm text-slate-400 flex items-center gap-2">
+                        <i data-lucide="clock" class="w-4 h-4 text-red-500"></i>
+                        Hora
+                    </p>
+                    <p class="text-sm font-semibold text-white">09:33:18</p>
+                </div>
+            </div>
+            
+            <main class="space-y-6 flex-grow">
+                
+                <div class="glass-panel p-6 rounded-2xl transition-all duration-300 border border-slate-700/50" id="card1">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 class="text-xl font-semibold">Foco 1</h2>
+                            <span class="text-xs text-slate-400 font-mono">Salida GPIO 22</span>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="lightbulb" id="icon1" class="w-10 h-10 text-slate-600 transition-colors duration-300"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="updateState('sala', true)" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition">
+                            ENCENDER
+                        </button>
+                        <button onclick="updateState('sala', false)" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition">
+                            APAGAR
+                        </button>
+                    </div>
+                </div>
+            
+                <div class="glass-panel p-6 rounded-2xl transition-all duration-300 border border-slate-700/50" id="card2">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 class="text-xl font-semibold">Foco 2</h2>
+                            <span class="text-xs text-slate-400 font-mono">Salida GPIO 23</span>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="lightbulb" id="icon2" class="w-10 h-10 text-slate-600 transition-colors duration-300"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 mt-4">
+                        <button onclick="updateState('laboratorio', true)" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition">
+                            ENCENDER
+                        </button>
+                        <button onclick="updateState('laboratorio', false)" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold py-3 rounded-xl shadow-lg transform active:scale-95 transition">
+                            APAGAR
+                        </button>
+                    </div>
+                </div>
+                
+                <button onclick="openConfig()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transform active:scale-95 transition flex items-center justify-center gap-2 mt-8">
+                    <i data-lucide="link" class="w-5 h-5"></i>
+                    Vincular Dispositivo
+                </button>
+    
+            </main>
+        </div>
+
+        <footer class="mt-8 text-center text-xs text-slate-500 font-mono">
+            Tecnología Superior Universitaria en Automatización e Instrumentación
+        </footer>
+    </div>
+
+    <div id="configModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-slate-900 border border-slate-700 p-6 rounded-2xl w-11/12 max-w-md shadow-2xl">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i data-lucide="database" class="w-5 h-5 text-red-400"></i> Configuración Firebase
+            </h3>
+            <p class="text-sm text-slate-400 mb-4">Ingresa las credenciales de tu proyecto Firebase Realtime Database.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">API KEY</label>
+                    <input type="text" id="apiKeyInput" placeholder="AIzaSy..." class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 outline-none text-white"> </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">DATABASE URL</label>
+                    <input type="text" id="dbUrlInput" placeholder="https://proyecto.firebaseio.com" class="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-sm focus:ring-2 focus:ring-red-500 outline-none text-white"> </div>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="closeConfig()" class="flex-1 py-3 text-slate-400 hover:text-white transition">Cancelar</button>
+                <button onclick="saveConfig()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-xl">Guardar y Conectar</button> </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        let app, db;
+        
+        // Exponer funciones al scope global para los botones HTML
+        window.openConfig = () => document.getElementById('configModal').classList.remove('hidden');
+        window.closeConfig = () => document.getElementById('configModal').classList.add('hidden');
+        
+        window.saveConfig = () => {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const dbUrl = document.getElementById('dbUrlInput').value.trim();
+            
+            if(!apiKey || !dbUrl) return Swal.fire('Error', 'Faltan datos', 'error');
+
+            localStorage.setItem('iot_api_key', apiKey);
+            localStorage.setItem('iot_db_url', dbUrl);
+            
+            initFirebase(apiKey, dbUrl);
+            closeConfig();
+        };
+
+        window.updateState = (foco, estado) => {
+            if(!db) return Swal.fire('Error', 'Configura Firebase primero', 'warning');
+            
+            // Escribir en la base de datos (/casa/sala o /casa/laboratorio)
+            set(ref(db, 'casa/' + foco), estado)
+                .then(() => {
+                    // Feedback háptico opcional
+                    if(navigator.vibrate) navigator.vibrate(50);
+                })
+                .catch((error) => Swal.fire('Error', error.message, 'error'));
+        };
+
+        function initFirebase(apiKey, databaseURL) {
+            try {
+                const firebaseConfig = { apiKey, databaseURL };
+                app = initializeApp(firebaseConfig);
+                db = getDatabase(app);
+
+                // Escuchar cambios en tiempo real
+                const casaRef = ref(db, 'casa');
+                
+                onValue(casaRef, (snapshot) => {
+                    updateStatusUI(true);
+                    const data = snapshot.val();
+                    if(data) {
+                        // Cambié 'card1' y 'icon1' por los nombres de foco originales si fuera necesario.
+                        updateFocoUI('sala', data.sala, 'card1', 'icon1'); 
+                        updateFocoUI('laboratorio', data.laboratorio, 'card2', 'icon2');
+                    }
+                }, (error) => {
+                    console.error(error);
+                    updateStatusUI(false);
+                });
+
+            } catch (e) {
+                console.error(e);
+                Swal.fire('Error', 'Credenciales inválidas', 'error');
+            }
+        }
+
+        function updateFocoUI(name, state, cardId, iconId) {
+            const card = document.getElementById(cardId);
+            const icon = document.getElementById(iconId);
+            
+            if(state) {
+                // Estado ON (con efecto rojo)
+                card.classList.add('glow-on');
+                // card.classList.replace('border-slate-700/50', 'border-red-500'); // No es necesario si la sombra ya es roja
+                icon.classList.add('text-red-400', 'fill-current');
+                icon.classList.remove('text-slate-600');
+            } else {
+                // Estado OFF
+                card.classList.remove('glow-on');
+                // card.classList.replace('border-red-500', 'border-slate-700/50');
+                icon.classList.remove('text-red-400', 'fill-current');
+                icon.classList.add('text-slate-600');
+            }
+        }
+
+        function updateStatusUI(connected) {
+            const headerEl = document.getElementById('headerStatus');
+            const headerTextEl = document.getElementById('headerStatusText');
+
+            if(connected) {
+                // Estado Conectado (Verde, o Blanco/Gris)
+                headerEl.classList.remove('text-red-500');
+                headerEl.classList.add('text-emerald-500'); // Usamos verde para conectado
+                
+                headerEl.innerHTML = `<i data-lucide="plug-zap" class="w-4 h-4 text-emerald-500"></i><span class="text-sm font-medium text-emerald-500" id="headerStatusText">Conectado</span>`;
+                lucide.createIcons();
+            } else {
+                // Estado Desconectado (Rojo, como en la imagen)
+                headerEl.classList.remove('text-emerald-500');
+                headerEl.classList.add('text-red-500');
+
+                headerEl.innerHTML = `<i data-lucide="disc" class="w-4 h-4 text-red-500 fill-red-500"></i><span class="text-sm font-medium text-red-500" id="headerStatusText">Desconectado</span>`;
+                lucide.createIcons();
+            }
+        }
+
+        // Cargar config guardada al inicio
+        lucide.createIcons();
+        const savedKey = localStorage.getItem('iot_api_key');
+        const savedUrl = localStorage.getItem('iot_db_url');
+        
+        if(savedKey && savedUrl) {
+            document.getElementById('apiKeyInput').value = savedKey;
+            document.getElementById('dbUrlInput').value = savedUrl;
+            initFirebase(savedKey, savedUrl);
+        } else {
+            // Eliminar la apertura automática del modal para no interferir con la interfaz inicial
+            // setTimeout(openConfig, 1000); // Comentado
+        }
+
+    </script>
+</body>
+</html>
